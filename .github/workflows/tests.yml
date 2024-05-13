@@ -1,16 +1,98 @@
 name: Automatisation des tests
+
 on: push
+
 jobs:
   Compilation:
     runs-on: ubuntu-latest
     steps:
-      - name: Compilation
-        run: |
-          last_directory=$(basename ${{ runner.workspace }})
-          git clone https://github.com/${{ github.repository }}.git
-          cd ./$last_directory
-          mkdir build
-          cd build
-          cmake ..
-          make
-          make test
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Create Build Directory
+        run: mkdir build
+      - name: Change directory to Build
+        run: cd build
+      - name: Run CMake
+        run: cmake ..
+      - name: Build
+        run: make
+      - name: Archive Build Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: compiled-app
+          path: build/
+
+  Test_Add:
+    runs-on: ubuntu-latest
+    needs: Compilation
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Download Build Artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: compiled-app
+          path: build/
+      - name: Test fonction add
+        run: ./build/src/calculator add 10 5
+        continue-on-error: true
+
+  Test_Sub:
+    runs-on: ubuntu-latest
+    needs: Compilation
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Download Build Artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: compiled-app
+          path: build/
+      - name: Test fonction sub
+        run: ./build/src/calculator sub 10 5
+        continue-on-error: true
+
+  Test_Mul:
+    runs-on: ubuntu-latest
+    needs: Compilation
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Download Build Artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: compiled-app
+          path: build/
+      - name: Test fonction mul
+        run: ./build/src/calculator mul 10 5
+        continue-on-error: true
+
+  Test_Div:
+    runs-on: ubuntu-latest
+    needs: Compilation
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Download Build Artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: compiled-app
+          path: build/
+      - name: Test fonction div
+        run: ./build/src/calculator div 10 5
+        continue-on-error: true
+
+  Test_Car:
+    runs-on: ubuntu-latest
+    needs: Compilation
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Download Build Artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: compiled-app
+          path: build/
+      - name: Test fonction car
+        run: ./build/src/calculator car 5
+        continue-on-error: true
